@@ -114,7 +114,7 @@ void SceneInvestigation::Init()
 	glUseProgram(m_programID);
 	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-	light[0].type = Light::LIGHT_POINT;
+	light[0].type = Light::LIGHT_DIRECTIONAL;
 	light[0].position.Set(20, 50, 20);
 	light[0].color.Set(1, 1, 1);
 	light[0].power = 1;
@@ -125,7 +125,6 @@ void SceneInvestigation::Init()
 	light[0].cosInner = cos(Math::DegreeToRadian(30));
 	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
-
 
 	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
@@ -147,8 +146,7 @@ void SceneInvestigation::Init()
 	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
 	light[1].cosInner = cos(Math::DegreeToRadian(30));
 	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 1.f, 0.f);
-
+	light[1].spotDirection.Set(0.f, 1.f, 0.f); 
 
 	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
 	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
@@ -239,8 +237,6 @@ void SceneInvestigation::Init()
 	Mtx44 projection;
 	projection.SetToPerspective(45.f, 4.f / 3.f, 0.1f, 1000.f);
 	projectionStack.LoadMatrix(projection);
-
-	glEnable(GL_DEPTH_TEST);
 
 	Mesh::SetMaterialLoc(m_parameters[U_MATERIAL_AMBIENT], m_parameters[U_MATERIAL_DIFFUSE], m_parameters[U_MATERIAL_SPECULAR], m_parameters[U_MATERIAL_SHININESS]);
 
@@ -385,13 +381,12 @@ void SceneInvestigation::Update(double dt)
 		float BUTTON_LEFT = 0;
 		float BUTTON_RIGHT = 1;
 
-		float posX = (x / w) * 80; //convert (0,800) to (0,80)
-		float posY = 60 - ((y / h) * 60); //convert (600,0) to (0,60)
+		float posX = (x / w) * 80;
+		float posY = 60 - ((y / h) * 60); 
 		std::cout << "posX:" << posX << " , posY:" << posY << std::endl;
 		if (posX > BUTTON_LEFT && posX < BUTTON_RIGHT && posY > BUTTON_BOTTOM && posY < BUTTON_TOP)
 		{
 			std::cout << "Hit!" << std::endl;
-			//trigger user action or function
 		}
 		else
 		{
@@ -635,14 +630,14 @@ void SceneInvestigation::RenderCityObjects()
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(/*-250*/-203, 11, /*-70*/-38);
+	modelStack.Translate(-203, 11, -38);
 	modelStack.Rotate(90, 0, 90, 0);
 	modelStack.Scale(14, 14, 14);
 	RenderMesh(meshList[GEO_POSTER1], false);
 	modelStack.PopMatrix();
 
 	modelStack.PushMatrix();
-	modelStack.Translate(/*-250*/-203, 11, /*-70*/-102);
+	modelStack.Translate(-203, 11, -102);
 	modelStack.Rotate(90, 0, 90, 0);
 	modelStack.Scale(14, 14, 14);
 	RenderMesh(meshList[GEO_POSTER2], false);
@@ -823,7 +818,7 @@ void SceneInvestigation::IntroAndResultInteractions()
 {
 	if (Application::IsKeyPressed('E'))
 	{
-		if (gameStage == 0 || (gameStage == 2 && win == false))
+		if ((gameStage == 0 || (gameStage == 2 && win == false)) && touchRefresh > 3)
 		{
 			gameStage = 1;
 			score = 0;
@@ -835,6 +830,7 @@ void SceneInvestigation::IntroAndResultInteractions()
 		if (gameStage == 2 && win == true)
 		{
 			gameStage = 3;
+			camera.Init(Vector3(-140, 9.5, -70), Vector3(-250, 9.5, -70), Vector3(0, 1, 0));
 		}
 	}
 }
@@ -1068,18 +1064,6 @@ void SceneInvestigation::Render()
 		RenderSkybox();
 		RenderCityObjects();
 		RenderMinigameUI();
-
-		//for testing
-
-		modelStack.PushMatrix();
-		modelStack.Translate(light[1].position.x, light[1].position.y, light[1].position.z);
-		RenderMesh(meshList[GEO_LIGHTBALL], false);
-		modelStack.PopMatrix();
-
-		modelStack.PushMatrix();
-		modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-		RenderMesh(meshList[GEO_LIGHTBALL], false);
-		modelStack.PopMatrix();
 	}
 	if (gameStage == 2)
 	{
@@ -1099,18 +1083,6 @@ void SceneInvestigation::Render()
 	ss << "FPS: " << FPS;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 0);
 
-	std::ostringstream Xcoords;
-	Xcoords.str("");
-	Xcoords.precision(3);
-	Xcoords << "X : " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], Xcoords.str(), Color(0, 0, 1), 2, 0, 54);
-
-	std::ostringstream Zcoords;
-	Zcoords.str("");
-	Zcoords.precision(3);
-	Zcoords << "Z : " << camera.position.z;
-	RenderTextOnScreen(meshList[GEO_TEXT], Zcoords.str(), Color(0, 0, 1), 2, 0, 52);
-
 
 }
 void SceneInvestigation::Exit()
@@ -1118,10 +1090,7 @@ void SceneInvestigation::Exit()
 	// Cleanup VBO here
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		if (meshList[i])
-		{
-			delete meshList[i];
-		}
+		delete meshList[i];
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
