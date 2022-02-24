@@ -173,6 +173,9 @@ void SceneMainMenu::Init()
 	meshList[GEO_TEXT] = MeshBuilder::GenerateText("text", 16, 16);
 	meshList[GEO_TEXT]->textureID = LoadTGA("Image//DimboFont.tga");
 
+	meshList[GEO_IMAGE] = MeshBuilder::GenerateQuad("image", Color(1, 1, 1), 1, 1);
+	meshList[GEO_IMAGE]->textureID = LoadTGA("Image//explostion.tga");
+
 	meshList[GEO_GROUND] = MeshBuilder::GenerateFloor("floor", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//R(6).tga");
 
@@ -246,21 +249,8 @@ void SceneMainMenu::Update(double dt)
 	right.Normalize();
 
 	float LSPEED = 10.0;
-	static int maxShoulder = 0;
-	static int maxThigh = 0;
-	static int counter = 0;
-	static int spin = 0;
-	static int startSpin = 0;
-	static int timer = 0;
-	static int temp = 0;
 	static float CAMERA_SPEED = 30.f;
 
-	/*if (Application::IsKeyPressed('I'))	light[0].position.z -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('K'))	light[0].position.z += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('J'))	light[0].position.x -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('L'))	light[0].position.x += (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('O'))	light[0].position.y -= (float)(LSPEED * dt);
-	if (Application::IsKeyPressed('P'))	light[0].position.y += (float)(LSPEED * dt);*/
 
 	if (Application::IsKeyPressed('1')) glEnable(GL_CULL_FACE);
 	if (Application::IsKeyPressed('2')) glDisable(GL_CULL_FACE);
@@ -687,6 +677,13 @@ void SceneMainMenu::Render()
 	RenderTextOnScreen(meshList[GEO_TEXT], Zcoords.str(), Color(0, 0, 1), 2, 0, 52);
 
 	modelStack.PushMatrix();
+	modelStack.Translate(0, 30, -25.1);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(18, 8, 1);
+	RenderMesh(meshList[GEO_IMAGE], false);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
 	modelStack.Translate(-5, 30, -25);
 	modelStack.Scale(7, 7, 7);
 	RenderText(meshList[GEO_TEXT], "Con-heist", Color(1, 0, 0));
@@ -698,15 +695,19 @@ void SceneMainMenu::Render()
 	RenderText(meshList[GEO_TEXT], "Start [E]", Color(1, 0, 0));
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(5, 30, 25);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(7, 7, 7);
+	RenderText(meshList[GEO_TEXT], "Con-heist", Color(1, 0, 0));
+	modelStack.PopMatrix();
 
-
-
-
-	if (Application::IsKeyPressed('E'))
-	{
-		std::cout << "E pressed" << std::endl;
-	}
-
+	modelStack.PushMatrix();
+	modelStack.Translate(3, 14, 25);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(3, 3, 3);
+	RenderText(meshList[GEO_TEXT], "Start [E]", Color(1, 0, 0));
+	modelStack.PopMatrix();
 
 	
 
@@ -722,22 +723,7 @@ void SceneMainMenu::Render()
 void SceneMainMenu::Exit()
 {
 	// Cleanup VBO here
-	delete meshList[GEO_QUAD];
-	delete meshList[GEO_AXES];
-	delete meshList[GEO_CUBE];
-	delete meshList[GEO_CIRCLE];
-	delete meshList[GEO_SPHERE];
-	delete meshList[GEO_TORUS];
-	delete meshList[GEO_CYLINDER];
-	delete meshList[GEO_HEMISPHERE];
-	delete meshList[GEO_CONE];
-	delete meshList[GEO_LEFT];
-	delete meshList[GEO_RIGHT];
-	delete meshList[GEO_TOP];
-	delete meshList[GEO_BOTTOM];
-	delete meshList[GEO_TEXT];
-	delete meshList[GEO_FRONT];
-	delete meshList[GEO_BACK];
+	for (int i = 0; i < NUM_GEOMETRY; i++)	delete meshList[i];
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }

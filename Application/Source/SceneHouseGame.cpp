@@ -405,16 +405,17 @@ void SceneHouseGame::Init()
 	meshList[GEO_GROUND]->textureID = LoadTGA("Image//woodFloor.tga");
 
 	//entities
-	meshList[GEO_PASSPORT] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_DOCUMENTS] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_CLOTHES] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_MONEY] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_HARDDRIVE] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_WALLET] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_PHONE] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_EVIDENCE1] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_EVIDENCE2] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
-	meshList[GEO_MEDS] = MeshBuilder::GenerateCube("cube", Color(1., 1., 1.), 1.f, 1.f, 1.f);
+	meshList[GEO_PASSPORT] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//passport1.obj", "OBJ//passport1.mtl");
+	meshList[GEO_DOCUMENTS] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//Documents.obj", "OBJ//Documents.mtl");
+	meshList[GEO_CLOTHES] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//shirt-2.obj", "OBJ//shirt-2.mtl");
+	meshList[GEO_MONEY] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//Moneyrecent.obj", "OBJ//Moneyrecent.mtl");
+	meshList[GEO_HARDDRIVE] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//Harddrive.obj", "OBJ//Harddrive.mtl");
+	meshList[GEO_WALLET] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//wallet.obj", "OBJ//wallet.mtl");
+	meshList[GEO_WALLET]->textureID = LoadTGA("Image//woodFloor.tga");
+	meshList[GEO_PHONE] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//phone.obj", "OBJ//phone.mtl");
+	meshList[GEO_EVIDENCE1] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//Documents.obj", "OBJ//Documents.mtl");
+	meshList[GEO_EVIDENCE2] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//Documents.obj", "OBJ//Documents.mtl");
+	meshList[GEO_MEDS] = MeshBuilder::GenerateOBJMTL("box closed", "OBJ//med-pack.obj", "OBJ//med-pack.mtl");
 
 	//hud
 	meshList[GEO_DIALOGUE] = MeshBuilder::GenerateQuad("TextBox", Color(0.0, 0.0, 0.0), 1.f, 1.f);
@@ -1015,7 +1016,7 @@ void SceneHouseGame::Render()
 
 	RenderSkybox();
 
-	RenderMesh(meshList[GEO_AXES], false);
+	//RenderMesh(meshList[GEO_AXES], false);
 
 
 
