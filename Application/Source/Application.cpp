@@ -176,26 +176,26 @@ void Application::Run()
 		if (IsKeyPressed(VK_F8))
 			scene = scene8;
 
-		int sceneNo = scene->NextScene();
-		if (sceneNo == 1)
-			scene = scene1;
-		if (sceneNo == 2)
-			scene = scene2;
-		if (sceneNo == 3)
-			scene = scene3;
-		if (sceneNo == 4)
-			scene = scene4;
-		if (sceneNo == 5)
-			scene = scene5;
-		if (sceneNo == 6)
-			scene = scene6;
-		if (sceneNo == 7)
-			scene = scene7;
-		if (sceneNo == 8)
-			scene = scene8;
+		//int sceneNo = scene->NextScene();
+		//if (sceneNo == 1)
+		//	scene = scene1;
+		//if (sceneNo == 2)
+		//	scene = scene2;
+		//if (sceneNo == 3)
+		//	scene = scene3;
+		//if (sceneNo == 4)
+		//	scene = scene4;
+		//if (sceneNo == 5)
+		//	scene = scene5;
+		//if (sceneNo == 6)
+		//	scene = scene6;
+		//if (sceneNo == 7)
+		//	scene = scene7;
+		//if (sceneNo == 8)
+		//	scene = scene8;
 
 
-		if (scene == scene8) 
+		if (scene == scene8 || scene == scene4) 
 		{
 			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}

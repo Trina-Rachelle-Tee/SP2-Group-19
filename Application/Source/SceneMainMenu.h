@@ -38,6 +38,7 @@ class SceneMainMenu : public Scene
         GEO_BLEND,
         GEO_TEXT,
         GEO_GROUND,
+        GEO_IMAGE,
         NUM_GEOMETRY,
     };
     enum UNIFORM_TYPE

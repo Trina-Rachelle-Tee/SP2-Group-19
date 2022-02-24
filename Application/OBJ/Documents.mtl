@@ -1,0 +1,12 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl Material.002
+Kd 0.800000 0.007318 0.004676
+Ks 0.500000 0.500000 0.500000
+
+newmtl Material.003
+Kd 0.038019 0.074538 0.800000
+
+newmtl Material.004
+Kd 1.000000 1.000000 1.000000

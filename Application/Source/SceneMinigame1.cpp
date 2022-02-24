@@ -173,16 +173,16 @@ void SceneMinigame1::Init()
 	meshList[GEO_ADS1]->textureID = LoadTGA("Image//th.tga");
 
 	meshList[GEO_ADS2] = MeshBuilder::GenerateQuad("ADS", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_ADS2]->textureID = LoadTGA("Image//th (1).tga");
+	meshList[GEO_ADS2]->textureID = LoadTGA("Image//th_1.tga");
 
 	meshList[GEO_ADS3] = MeshBuilder::GenerateQuad("ADS", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_ADS3]->textureID = LoadTGA("Image//th (2).tga");
+	meshList[GEO_ADS3]->textureID = LoadTGA("Image//th_2.tga");
 
 	meshList[GEO_ADS4] = MeshBuilder::GenerateQuad("ADS", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_ADS4]->textureID = LoadTGA("Image//th (4).tga");
+	meshList[GEO_ADS4]->textureID = LoadTGA("Image//th_4.tga");
 
 	meshList[GEO_ADS5] = MeshBuilder::GenerateQuad("ADS", Color(1, 1, 1), 1.f, 1.f);
-	meshList[GEO_ADS5]->textureID = LoadTGA("Image//th (5).tga");
+	meshList[GEO_ADS5]->textureID = LoadTGA("Image//th_5.tga");
 
 	meshList[GEO_WEBSITE] = MeshBuilder::GenerateQuad("Website", Color(1, 1, 1), 1.f, 1.f);
 	meshList[GEO_WEBSITE]->textureID = LoadTGA("Image//website.tga");
@@ -1241,22 +1241,7 @@ void SceneMinigame1::Render()
 void SceneMinigame1::Exit()
 {
 	// Cleanup VBO here
-	delete meshList[GEO_QUAD];
-	delete meshList[GEO_AXES];
-	delete meshList[GEO_CUBE];
-	delete meshList[GEO_CIRCLE];
-	delete meshList[GEO_SPHERE];
-	delete meshList[GEO_TORUS];
-	delete meshList[GEO_CYLINDER];
-	delete meshList[GEO_HEMISPHERE];
-	delete meshList[GEO_CONE];
-	delete meshList[GEO_LEFT];
-	delete meshList[GEO_RIGHT];
-	delete meshList[GEO_TOP];
-	delete meshList[GEO_BOTTOM];
-	delete meshList[GEO_FRONT];
-	delete meshList[GEO_BACK];
-	delete meshList[GEO_TEXT];
+	for (int i = 0; i < NUM_GEOMETRY; i++)	delete meshList[i];
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }

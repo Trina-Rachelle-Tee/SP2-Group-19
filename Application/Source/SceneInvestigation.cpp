@@ -327,13 +327,6 @@ void SceneInvestigation::Update(double dt)
 
 
 	float LSPEED = 10.0;
-	static int maxShoulder = 0;
-	static int maxThigh = 0;
-	static int counter = 0;
-	static int spin = 0;
-	static int startSpin = 0;
-	static int timer = 0;
-	static int temp = 0;
 	static float CAMERA_SPEED = 30.f;
 	touchRefresh += 0.3;
 
