@@ -48,7 +48,7 @@ void SceneInvestigation::Init()
 
 	start = clock();
 	timing = touchRefresh = 0.0;
-	timeLimit = 60;
+	timeLimit = 20;
 	npcNum = objectNum = dialogueNum = 0;
 	gameStage = 0;
 	dialogueOn = false;

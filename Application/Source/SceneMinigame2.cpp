@@ -324,7 +324,7 @@ void SceneMinigame2::RenderResults()
 	if (heartScore >= 300)
 	{
 		words << "Success! Press [RETURN] to proceed";
-		RenderTextOnScreen(meshList[GEO_TEXT], words.str(), Color(1, 1, 1), 7, 15, 10);
+		RenderTextOnScreen(meshList[GEO_TEXT], words.str(), Color(1, 1, 1), 5, 15, 10);
 
 		if (Application::IsKeyPressed(VK_RETURN))
 		{

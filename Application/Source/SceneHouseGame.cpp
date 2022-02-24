@@ -1764,7 +1764,7 @@ void SceneHouseGame::Render()
 	if (gameStart == true)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Current objective: Find all the objects", Color(1, 0, 0), 4, 15, 55);
-		RenderTextOnScreen(meshList[GEO_TEXT], InvenSize.str() , Color(1, 1, 1), 4, 5, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], InvenSize.str() , Color(0, 1, 0), 4, 5, 5);
 	}
 	std::ostringstream SuitcaseSize;
 	SuitcaseSize.str("");
@@ -1772,7 +1772,7 @@ void SceneHouseGame::Render()
 	SuitcaseSize << "Suitcase " << suitcase.size() << " / 10";
 	if (gameStart == true)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], SuitcaseSize.str(), Color(1, 1, 1), 4, 5, 8);
+		RenderTextOnScreen(meshList[GEO_TEXT], SuitcaseSize.str(), Color(0, 1, 0), 4, 5, 8);
 	}
 	std::ostringstream TotalScore;
 	TotalScore.str("");
@@ -1780,7 +1780,7 @@ void SceneHouseGame::Render()
 	TotalScore << "Score: " << totalScore;
 	if (gameStart == true)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], TotalScore.str(), Color(1, 1, 1), 4, 65, 55);
+		RenderTextOnScreen(meshList[GEO_TEXT], TotalScore.str(), Color(0, 1, 0), 4, 65, 55);
 	}
 	std::ostringstream Timeleft;
 	Timeleft.str("");
@@ -1788,7 +1788,7 @@ void SceneHouseGame::Render()
 	Timeleft << "Time: " << timeRemaining << "s";
 	if (gameStart == true)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], Timeleft.str(), Color(1, 1, 1), 4, 65, 50);
+		RenderTextOnScreen(meshList[GEO_TEXT], Timeleft.str(), Color(0, 1, 0), 4, 65, 50);
 	}
 
 	if (lose == true)
@@ -1801,9 +1801,9 @@ void SceneHouseGame::Render()
 	if (win == true)
 	{
 		RenderMeshOnScreen(meshList[GEO_DIALOGUE], 30, 40, 100, 100);
-		RenderTextOnScreen(meshList[GEO_TEXT], "You have escaped!", Color(1, 1, 1), 5, 25, 45);
+		RenderTextOnScreen(meshList[GEO_TEXT], "You have escaped with the money!", Color(1, 1, 1), 5, 25, 45);
 		RenderTextOnScreen(meshList[GEO_TEXT], TimeTaken.str(), Color(1, 1, 1), 5, 25, 35);
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press [Return] to continue...", Color(0.5, 0.5, 0.5), 5, 25, 25);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press [Return] to return to Main Menu...", Color(0.5, 0.5, 0.5), 5, 25, 25);
 	}
 }
 
@@ -1824,7 +1824,7 @@ int SceneHouseGame::NextScene()
 {
 	if (nextScene == true)
 	{
-		return 8;
+		return 1;
 	}
 	return 0;
 }

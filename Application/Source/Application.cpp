@@ -19,7 +19,7 @@
 #include "SceneHouseGame.h"
 #include "SceneMinigame2.h"
 #include "SceneStalk.h"
-#include "SceneGameEnd.h"
+
 
 GLFWwindow* m_window;
 const unsigned char FPS = 60; // FPS of this game
@@ -144,7 +144,6 @@ void Application::Run()
 	Scene* scene5 = new SceneMinigame2;
 	Scene* scene6 = new SceneStalk();
 	Scene* scene7 = new SceneHouseGame();
-	Scene* scene8 = new SceneGameEnd();
 	Scene* scene = scene1;
 
 	scene1->Init();
@@ -154,7 +153,7 @@ void Application::Run()
 	scene5->Init();
 	scene6->Init();
 	scene7->Init();
-	scene8->Init();
+
 
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
@@ -191,18 +190,11 @@ void Application::Run()
 			scene = scene6;
 		if (sceneNo == 7)
 			scene = scene7;
-		if (sceneNo == 8)
-			scene = scene8;
 
-
-		if (scene == scene8) 
-		{
-			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		}
-		else
-		{
-			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		}
+	
+		
+		glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		
 		if (glfwRawMouseMotionSupported())
 		{
 			glfwSetInputMode(m_window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
@@ -227,7 +219,7 @@ void Application::Run()
 	delete scene5;
 	delete scene6;
 	delete scene7;
-	delete scene8;
+
 }
 
 void Application::Exit()

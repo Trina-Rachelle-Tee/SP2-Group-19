@@ -94,11 +94,16 @@ void SceneHouse::Init()
 	canPickup = false;
 	atDoor = false;
 	canLeave = false;
+	nextScene1 = false;
+	nextScene2 = false;
+	nextScene3 = false;
+	nextScene4 = false;
+
 	startMini1 = false;
 	startMini2 = false;
 	stage = 0;
 	index = 0;
-	
+
 	BossDialogue.push_back("Hello? ... Hello? ...");
 	BossDialogue.push_back("You finally answered.");
 	BossDialogue.push_back("Listen, it is prime time right now, word is out that there is...");
@@ -119,6 +124,14 @@ void SceneHouse::Init()
 	BossDialogue.push_back("You have got a day.");
 	BossDialogue.push_back("*Hangs up...*");
 
+	// [17]
+	BossDialogue.push_back("Damn you managed to get over 300 likes already?!...");
+	BossDialogue.push_back("This will catch the eye of more than just Melon Tusk.");
+	BossDialogue.push_back("Furthermore, with the information u provided...");
+	BossDialogue.push_back("We tracked down where he lives and he posesses high value data.");
+	BossDialogue.push_back("That people will be willing to pay an exorbitant amount for.");
+	BossDialogue.push_back("See if you can sneak into is quarters and obtain it.");
+	BossDialogue.push_back("*Hangs up...*");
 
 	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
@@ -325,8 +338,23 @@ void SceneHouse::Init()
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
 
+	if (stage == 0)
+	{
+		camera.Init(Vector3(1, 9.5, 5), Vector3(0, 9.5, 1), Vector3(0, 1, 0));
+	}
+	else if (stage == 1)
+	{
+		camera.Init(Vector3(1, 9.5, 5), Vector3(0, 9.5, 1), Vector3(0, 1, 0));
+	}
+	else if (stage == 2)
+	{
+		camera.Init(Vector3(21.2, 9.5, 69.2), Vector3(0, 9.5, 1), Vector3(0, 1, 0));
+	}
+	else if (stage == 3)
+	{
+		camera.Init(Vector3(21.2, 9.5, 69.2), Vector3(0, 9.5, 1), Vector3(0, 1, 0));
+	}
 
-	camera.Init(Vector3(1, 9.5, 5), Vector3(0, 9.5, 1), Vector3(0, 1, 0));
 
 	for (int i = 0; i < NUM_GEOMETRY; i++)	meshList[i] = nullptr;
 	
@@ -484,6 +512,18 @@ void SceneHouse::getBossDialogue()
 				index += 1;
 			isPressed = !isPressed;
 		}
+		else if (stage == 3)
+		{
+			if (index == 23)
+			{
+				playDialogue = false;
+				startMini3 = true;
+				index += 1;
+			}
+			else
+				index += 1;
+			isPressed = !isPressed;
+		}
 	}
 	else if (!Application::IsKeyPressed(VK_RETURN) && playDialogue == true && isPressed)
 	{
@@ -509,12 +549,13 @@ void SceneHouse::pcInteract()
 }
 void SceneHouse::StartMini1()
 {
-	if (camera.PlayerInRange(hitbox, 10) == true && startMini1 == true)
+	if (camera.PlayerInRange(hitbox, 10) == true && startMini1 == true && stage == 1)
 	{
 		canInteractPC = true;
 		if (Application::IsKeyPressed('E'))
 		{
-			nextScene == true;
+			incomingCall = true;
+			nextScene2 = true;
 		}
 	}
 	else
@@ -523,12 +564,13 @@ void SceneHouse::StartMini1()
 void SceneHouse::StartMini2()
 {
 
-	if (camera.PlayerInRange(hitbox, 10) == true && startMini2 == true)
+	if (camera.PlayerInRange(hitbox, 10) == true && startMini2 == true && stage == 2)
 	{
 		canInteractPC = true;
 		if (Application::IsKeyPressed('E'))
 		{
-			nextScene == true;
+			incomingCall = true;
+			nextScene3 = true;
 		}
 	}
 	else
@@ -643,9 +685,9 @@ void SceneHouse::Update(double dt)
 		if (Application::IsKeyPressed(VK_RETURN) && !isPressed)
 		{
 	
-			incomingCall = true;
+			incomingCall = false;
 			canLeave = false;
-			nextScene = true;
+			nextScene1 = true;
 			
 		}
 		else if (!Application::IsKeyPressed(VK_RETURN) && isPressed)
@@ -653,14 +695,33 @@ void SceneHouse::Update(double dt)
 			isPressed = false;
 		}
 	}
+
+	if (camera.PlayerInRange(hitbox, 11) == true && stage == 3)
+	{
+		if (Application::IsKeyPressed(VK_RETURN))
+		{
+			nextScene4 = true;
+		}
+	}
+
 	if (stage == 1)
 	{
 		startMini1 = true;
+		incomingCall = false;
+	}
+
+	else if (stage == 2)
+	{
+		startMini1 = false;
+		startMini3 = false;
+		incomingCall = true;
+	}
+	else if (stage == 3)
+	{
+		startMini1 = false;
 		startMini2 = false;
 		incomingCall = false;
 	}
-	else
-		startMini1 = false;
 }
 void SceneHouse::RenderSkybox() {
 	const float OFFSET = 499;
@@ -942,17 +1003,10 @@ void SceneHouse::Render()
 	//RenderMesh(meshList[GEO_AXES], false);
 
 	modelStack.PushMatrix();
-	modelStack.Translate(light[0].position.x, light[0].position.y, light[0].position.z);
-	modelStack.Scale(1, 1, 1);
-	RenderMesh(meshList[GEO_LIGHTBALL], false);
-	modelStack.PopMatrix();
-
-	modelStack.PushMatrix();
 	{
 		modelStack.Translate(0, 0, 0);
 		modelStack.Rotate(0, 1, 0, 0);
 		modelStack.Scale(13, 13, 13);
-
 
 		// bedroom
 		// walls
@@ -1114,9 +1168,6 @@ void SceneHouse::Render()
 		modelStack.Scale(1, 1, 1);
 		RenderMesh(meshList[GEO_BEDSIDE], true);
 		modelStack.PopMatrix();
-
-
-
 
 		// bathroom
 		//walls
@@ -1634,9 +1685,13 @@ void SceneHouse::Render()
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Current Objective: Use PC to search", Color(1, 0, 0), 5, 15, 55);
 	}
-	if (startMini2 == true && stage == 2)
+	else if (startMini2 == true && stage == 2)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Current Objective: Use PC to boost hype", Color(1, 0, 0), 5, 15, 55);
+	}
+	else if (startMini3 == true && stage == 3)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Current Objective: Leave to travel to Melon", Color(1, 0, 0), 5, 15, 55);
 	}
 	if (canLeave == true && atDoor == true)
 	{
@@ -1659,23 +1714,29 @@ void SceneHouse::CurrentScene()
 
 int SceneHouse::NextScene()
 {
-	if (nextScene == true && stage == 0)
+	if (nextScene1 == true)
 	{
-		nextScene = false;
 		stage++;
+		nextScene1 = false;
 		return 3;
 	}
-	else if (nextScene == true && stage == 1)
+	else if (nextScene2 == true)
 	{
-		nextScene = false;
 		stage++;
+		nextScene2 = false;
 		return 4;
 	}
-	else if (nextScene == true && stage == 2)
+	else if (nextScene3 == true)
 	{
-		nextScene = false;
 		stage++;
+		nextScene3 = false;
 		return 5;
+	}
+	else if (nextScene4 == true)
+	{
+		stage++;
+		nextScene4 = false;
+		return 6;
 	}
 	return 0;
 }

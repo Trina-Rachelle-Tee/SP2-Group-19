@@ -150,6 +150,7 @@ private:
     bool hitenemydown = false;
     bool pickup1;
     bool switcher;
+    bool nextScene;
     float cx, cy, cz;
     Vector3 view;
     Vector3 right;

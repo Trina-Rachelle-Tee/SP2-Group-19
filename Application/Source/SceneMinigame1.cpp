@@ -39,6 +39,7 @@ void SceneMinigame1::Init()
 	InitHitbox();
 
 	pickup = false;
+	nextScene = false;
 
 	start = clock();
 
@@ -266,13 +267,6 @@ void SceneMinigame1::Update(double dt)
 
 
 	float LSPEED = 10.0;
-	static int maxShoulder = 0;
-	static int maxThigh = 0;
-	static int counter = 0;
-	static int spin = 0;
-	static int startSpin = 0;
-	static int timer = 0;
-	static int temp = 0;
 	static float CAMERA_SPEED = 30.f;
 
 	/*if (Application::IsKeyPressed('I'))	light[0].position.z -= (float)(LSPEED * dt);
@@ -352,6 +346,10 @@ void SceneMinigame1::Update(double dt)
 		std::cout << "RBUTTON UP" << std::endl;
 	}
 
+	if (gamestart == true && Application::IsKeyPressed(VK_RETURN))
+	{
+		nextScene = true;
+	}
 	if (Application::IsKeyPressed('Q'))
 	{
 		gamestart = true;
@@ -1234,8 +1232,6 @@ void SceneMinigame1::Render()
 	ss.precision(4);
 	ss << "FPS: " << FPS;
 	RenderTextOnScreen(meshList[GEO_TEXT], ss.str(), Color(0, 1, 0), 4, 0, 0);
-
-
 }
 
 void SceneMinigame1::Exit()
@@ -1252,5 +1248,9 @@ void SceneMinigame1::CurrentScene()
 
 int SceneMinigame1::NextScene()
 {
+	if (nextScene == true)
+	{
+		return 2;
+	}
 	return 0;
 }

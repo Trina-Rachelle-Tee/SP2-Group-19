@@ -192,9 +192,13 @@ private:
     bool playDialogue;
     bool atDoor;
     bool canLeave;
-    bool nextScene;
+    bool nextScene1;
+    bool nextScene2;
+    bool nextScene3;
+    bool nextScene4;
     bool startMini1;
     bool startMini2;
+    bool startMini3;
     
     std::vector<std::string> BossDialogue;
 
