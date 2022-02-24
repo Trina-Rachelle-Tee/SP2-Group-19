@@ -20,7 +20,7 @@ SceneInvestigation::~SceneInvestigation()
 
 void SceneInvestigation::InitHitbox()
 {
-	//Hitboxes, pos xyz, scale xyz
+	//Hitboxes for interactions
 	hitbox.push_back(Hitbox(-80, -1, -80, 12, 12, 12));
 	hitbox.push_back(Hitbox(120, -1, -50, 12, 12, 12));
 	hitbox.push_back(Hitbox(70, -1, -80, 12, 12, 12));
@@ -29,6 +29,14 @@ void SceneInvestigation::InitHitbox()
 	hitbox.push_back(Hitbox(-30, -1, 10, 3, 3, 3));
 	hitbox.push_back(Hitbox(-203, 11, -38, 8, 8, 8));
 	hitbox.push_back(Hitbox(-203, 11, -102, 8, 8, 8));
+	//hitboxes for creating boundaries
+	hitbox.push_back(Hitbox(0, 0, -250, 500, 3, 3));
+	hitbox.push_back(Hitbox(200, 0, 0, 3, 3, 500));
+	hitbox.push_back(Hitbox(0, 0, 250, 500, 3, 3));
+	hitbox.push_back(Hitbox(-200, 0, 0, 3, 3, 500));
+	//hitbox for door
+	hitbox.push_back(Hitbox(-200, -1, -70, 35, 9, 35));
+	//(-250, -1, -70)
 }
 
 
@@ -37,8 +45,6 @@ void SceneInvestigation::Init()
 {
 	// Init VBO here
 	InitHitbox();
-
-	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 
 	start = clock();
 	timing = touchRefresh = 0.0;
@@ -51,10 +57,13 @@ void SceneInvestigation::Init()
 	info[2] = "Interest";
 	info[3] = "Dislikes";
 	info[4] = "Address";
+	win = false;
 	for (int i = 0; i < 5; i++)
 	{
 		infoAttained[i] = false;
 	}
+
+	glClearColor(0.0f, 0.0f, 0.4f, 0.0f);
 	
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -86,31 +95,30 @@ void SceneInvestigation::Init()
 	m_parameters[U_LIGHT0_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[0].cosCutoff");
 	m_parameters[U_LIGHT0_COSINNER] = glGetUniformLocation(m_programID, "lights[0].cosInner");
 	m_parameters[U_LIGHT0_EXPONENT] = glGetUniformLocation(m_programID, "lights[0].exponent");
+
 	m_parameters[U_LIGHT1_POSITION] = glGetUniformLocation(m_programID, "lights[1].position_cameraspace");
 	m_parameters[U_LIGHT1_COLOR] = glGetUniformLocation(m_programID, "lights[1].color");
 	m_parameters[U_LIGHT1_POWER] = glGetUniformLocation(m_programID, "lights[1].power");
 	m_parameters[U_LIGHT1_KC] = glGetUniformLocation(m_programID, "lights[1].kC");
 	m_parameters[U_LIGHT1_KL] = glGetUniformLocation(m_programID, "lights[1].kL");
-	m_parameters[U_LIGHT1_KQ] = glGetUniformLocation(m_programID, "lights[1].kQ");
-	m_parameters[U_LIGHTENABLED] = glGetUniformLocation(m_programID, "lightEnabled");
+	m_parameters[U_LIGHT1_KQ] = glGetUniformLocation(m_programID, "lights[1].kQ");;
 	m_parameters[U_LIGHT1_TYPE] = glGetUniformLocation(m_programID, "lights[1].type");
 	m_parameters[U_LIGHT1_SPOTDIRECTION] = glGetUniformLocation(m_programID, "lights[1].spotDirection");
 	m_parameters[U_LIGHT1_COSCUTOFF] = glGetUniformLocation(m_programID, "lights[1].cosCutoff");
 	m_parameters[U_LIGHT1_COSINNER] = glGetUniformLocation(m_programID, "lights[1].cosInner");
 	m_parameters[U_LIGHT1_EXPONENT] = glGetUniformLocation(m_programID, "lights[1].exponent");
-	
-	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
+
 	m_parameters[U_TEXT_ENABLED] = glGetUniformLocation(m_programID, "textEnabled");
 	m_parameters[U_TEXT_COLOR] = glGetUniformLocation(m_programID, "textColor");
-
-	
+	m_parameters[U_NUMLIGHTS] = glGetUniformLocation(m_programID, "numLights");
 	glUseProgram(m_programID);
+	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
 
-	light[0].type = Light::LIGHT_DIRECTIONAL;
+	light[0].type = Light::LIGHT_POINT;
 	light[0].position.Set(20, 50, 20);
 	light[0].color.Set(1, 1, 1);
-	light[0].power = 3;
-	light[0].kC = 8.f;
+	light[0].power = 1;
+	light[0].kC = 1.f;
 	light[0].kL = 0.01f;
 	light[0].kQ = 0.001f;
 	light[0].cosCutoff = cos(Math::DegreeToRadian(45));
@@ -118,17 +126,6 @@ void SceneInvestigation::Init()
 	light[0].exponent = 3.f;
 	light[0].spotDirection.Set(0.f, 1.f, 0.f);
 
-	light[1].type = Light::LIGHT_SPOT;
-	light[1].position.Set(-20, 50, -20);
-	light[1].color.Set(1, 1, 1);
-	light[1].power = 8;
-	light[1].kC = 8.f;
-	light[1].kL = 0.01f;
-	light[1].kQ = 0.001f;
-	light[1].cosCutoff = cos(Math::DegreeToRadian(50));
-	light[1].cosInner = cos(Math::DegreeToRadian(40));
-	light[1].exponent = 3.f;
-	light[1].spotDirection.Set(0.f, 0.f, 1.f);
 
 	glUniform1i(m_parameters[U_LIGHT0_TYPE], light[0].type);
 	glUniform3fv(m_parameters[U_LIGHT0_COLOR], 1, &light[0].color.r);
@@ -140,6 +137,19 @@ void SceneInvestigation::Init()
 	glUniform1f(m_parameters[U_LIGHT0_COSINNER], light[0].cosInner);
 	glUniform1f(m_parameters[U_LIGHT0_EXPONENT], light[0].exponent);
 
+	light[1].type = Light::LIGHT_DIRECTIONAL;
+	light[1].position.Set(-20, 50, -20);
+	light[1].color.Set(1, 1, 1);
+	light[1].power = 1;
+	light[1].kC = 1.f;
+	light[1].kL = 0.01f;
+	light[1].kQ = 0.001f;
+	light[1].cosCutoff = cos(Math::DegreeToRadian(45));
+	light[1].cosInner = cos(Math::DegreeToRadian(30));
+	light[1].exponent = 3.f;
+	light[1].spotDirection.Set(0.f, 1.f, 0.f);
+
+
 	glUniform1i(m_parameters[U_LIGHT1_TYPE], light[1].type);
 	glUniform3fv(m_parameters[U_LIGHT1_COLOR], 1, &light[1].color.r);
 	glUniform1f(m_parameters[U_LIGHT1_POWER], light[1].power);
@@ -149,9 +159,6 @@ void SceneInvestigation::Init()
 	glUniform1f(m_parameters[U_LIGHT1_COSCUTOFF], light[1].cosCutoff);
 	glUniform1f(m_parameters[U_LIGHT1_COSINNER], light[1].cosInner);
 	glUniform1f(m_parameters[U_LIGHT1_EXPONENT], light[1].exponent);
-	glUniform1i(m_parameters[U_NUMLIGHTS], 2);
-
-	
 
 	glGenVertexArrays(1, &m_vertexArrayID);
 	glBindVertexArray(m_vertexArrayID);
@@ -300,7 +307,7 @@ void SceneInvestigation::Init()
 
 	NPC5dialogue.push_back("Tusk has been coming here often to shop");
 	NPC5dialogue.push_back("But he never stops to chat with me, his ex colleague!");
-	NPC5dialogue.push_back("Hmph, always so antisocial");
+	NPC5dialogue.push_back("Hmph, he's always so antisocial");
 
 	WalletDialogue.push_back("Someone dropped a wallet");
 	WalletDialogue.push_back("The nametag says... Melon Tusk");
@@ -314,7 +321,7 @@ void SceneInvestigation::Init()
 
 void SceneInvestigation::Update(double dt)
 {
-	if (gameStage == 1)
+	if (gameStage == 1 || gameStage == 3)
 		camera.Update(dt, hitbox);
 	FPS = 1 / (float)dt;
 	timing = (float)((double)clock() - start) / (double)CLOCKS_PER_SEC;
@@ -359,6 +366,14 @@ void SceneInvestigation::Update(double dt)
 	if (Application::IsKeyPressed('9'))		 bLightEnabled = false;
 	else if (Application::IsKeyPressed('0')) bLightEnabled = true;
 
+	if (Application::IsKeyPressed('I'))
+		light[1].position.y += 3;
+	if (Application::IsKeyPressed('J'))
+		light[1].position.x -= 3;
+	if (Application::IsKeyPressed('L'))
+		light[1].position.x += 3;
+	if (Application::IsKeyPressed('K'))
+		light[1].position.y -= 3;
 	//Mouse Inputs
 	static bool bLButtonState = false;
 	if (!bLButtonState && Application::IsMousePressed(0))
@@ -409,7 +424,20 @@ void SceneInvestigation::Update(double dt)
 
 	
 	if (timing >= timeLimit && gameStage == 1)
+	{
 		gameStage = 2;
+		for (int i = 0; i < 5; i++)
+		{
+			if (infoAttained[i] == true)
+				score++;
+		}
+		if (score >= 3)
+			win = true;
+	}
+	if (gameStage == 1)
+		MinigameInteractions();
+	if (gameStage == 0 || gameStage == 2)
+		IntroAndResultInteractions();
 }
 
 void SceneInvestigation::RenderSkybox() {
@@ -481,13 +509,8 @@ void SceneInvestigation::RenderIntro()
 	RenderMesh(meshList[GEO_INTRO], false);
 	modelStack.PopMatrix();
 	glEnable(GL_DEPTH_TEST); //uncomment for RenderTextOnScreen
-	if (Application::IsKeyPressed('E'))
-	{
-		gameStage = 1;
-		start = clock();
-	}
 }
-void SceneInvestigation::RenderInvestigationScene()
+void SceneInvestigation::RenderCityObjects()
 {	
 
 	//NPC rendering
@@ -631,6 +654,9 @@ void SceneInvestigation::RenderInvestigationScene()
 	modelStack.Scale(14, 14, 14);
 	RenderMesh(meshList[GEO_POSTER2], false);
 	modelStack.PopMatrix();
+}
+void SceneInvestigation::RenderMinigameUI()
+{
 
 	//HUD rendering
 	std::ostringstream words;
@@ -656,28 +682,7 @@ void SceneInvestigation::RenderInvestigationScene()
 			spacing += 4;
 		}
 	}
-
-	//for activating NPC dialogue
-	for (int i = 0; i < 5; i++)//player talks to npc
-	{
-		if (camera.PlayerInRange(hitbox, i) == true && Application::IsKeyPressed('E') && touchRefresh > 3 && dialogueOn == false)
-		{
-			dialogueOn = true;
-			npcNum = i + 1;
-			dialogueNum = touchRefresh = 0;
-		}
-	}
-	for (int i = 5; i < 8; i++)
-	{
-		//for activating object dialogue
-		if (camera.PlayerInRange(hitbox, i) == true && Application::IsKeyPressed('E') && touchRefresh > 3 && dialogueOn == false)//player interacts with wallet
-		{
-			dialogueOn = true;
-			dialogueNum = touchRefresh = 0;
-			objectNum = i - 4;;
-		}
-	}
-	if (dialogueOn == true)//npc dialogue is shown on screen
+	if (dialogueOn == true)//rendering NPC dialogue
 	{
 		RenderMeshOnScreen(meshList[GEO_DIALOGUE], 30, 1, 100, 20);
 		//NPC DIALOGUE DISPLAY
@@ -734,7 +739,7 @@ void SceneInvestigation::RenderInvestigationScene()
 				infoAttained[0] = true;
 			}
 		}
-		//OBJECT DIALOGUE DISPLAY
+		//Rendering object dialogue
 		if (objectNum == 1)//interact with wallet
 		{
 			if (dialogueNum < WalletDialogue.size())
@@ -767,15 +772,79 @@ void SceneInvestigation::RenderInvestigationScene()
 				objectNum = 0;
 			}
 		}
+	}
 
-		if (Application::IsKeyPressed('E') && touchRefresh > 3)//next dialogue is shown
+	if (camera.PlayerInRange(hitbox, 12) == true)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Your house", Color(0, 1, 0), 5, 30, 55);//(-250, -1, -70)
+	}
+	//UI telling player they are in range
+	for (int i = 0; i < hitbox.size() - 1; i++)
+	{
+		if (dialogueOn == false)
 		{
-			dialogueNum++;
-			touchRefresh = 0;
+			if (camera.PlayerInRange(hitbox, i) == true)
+				RenderTextOnScreen(meshList[GEO_TEXT], "E to interact", Color(0, 1, 0), 5, 30, 48);
 		}
 	}
 }
+void SceneInvestigation::RenderGameEndUI()
+{
+	RenderTextOnScreen(meshList[GEO_TEXT], "Return home", Color(1, 0, 0), 4, 30, 3);
 
+	if (camera.PlayerInRange(hitbox, 12) == true)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Your house", Color(0, 1, 0), 5, 32, 55);
+		RenderTextOnScreen(meshList[GEO_TEXT], "E to enter", Color(0, 1, 0), 5, 32, 50);
+	}
+}
+void SceneInvestigation::MinigameInteractions()
+{
+	//for activating NPC dialogue
+	for (int i = 0; i < 5; i++)//player talks to npc
+	{
+		if (camera.PlayerInRange(hitbox, i) == true && Application::IsKeyPressed('E') && touchRefresh > 3 && dialogueOn == false)
+		{
+			dialogueOn = true;
+			npcNum = i + 1;
+			dialogueNum = touchRefresh = 0;
+		}
+	}
+	for (int i = 5; i < 8; i++)
+	{
+		//for activating object dialogue
+		if (camera.PlayerInRange(hitbox, i) == true && Application::IsKeyPressed('E') && touchRefresh > 3 && dialogueOn == false)//player interacts with wallet
+		{
+			dialogueOn = true;
+			dialogueNum = touchRefresh = 0;
+			objectNum = i - 4;;
+		}
+	}
+	if (Application::IsKeyPressed('E') && touchRefresh > 3)//next dialogue is shown
+	{
+		dialogueNum++;
+		touchRefresh = 0;
+	}
+}
+void SceneInvestigation::IntroAndResultInteractions()
+{
+	if (Application::IsKeyPressed('E'))
+	{
+		if (gameStage == 0 || (gameStage == 2 && win == false))
+		{
+			gameStage = 1;
+			score = 0;
+			start = clock();
+			camera.Init(Vector3(-180, 9.5, -70), Vector3(0, 9.5, 0), Vector3(0, 1, 0));
+			for (int i = 0; i < 5; i++)
+				infoAttained[i] = false;
+		}
+		if (gameStage == 2 && win == true)
+		{
+			gameStage = 3;
+		}
+	}
+}
 void SceneInvestigation::RenderResults()
 {
 	camera.Init(Vector3(1, 9.5, 5), Vector3(0, 9.5, 1), Vector3(0, 1, 0));
@@ -795,7 +864,6 @@ void SceneInvestigation::RenderResults()
 	std::ostringstream words;
 	words.str("Info attained : ");
 	RenderTextOnScreen(meshList[GEO_TEXT], words.str(), Color(0, 0, 0), 4, 28, 45);
-	int score = 0;
 	int spacing = 4;
 	for (int i = 0; i < 5; i++)
 	{
@@ -804,7 +872,6 @@ void SceneInvestigation::RenderResults()
 			words.str("");
 			words << "- " << info[i];
 			RenderTextOnScreen(meshList[GEO_TEXT], words.str(), Color(0, 0, 0), 4, 28, 45 - spacing);
-			score++;
 			spacing += 4;
 		}
 	}
@@ -813,22 +880,13 @@ void SceneInvestigation::RenderResults()
 	RenderTextOnScreen(meshList[GEO_TEXT], words.str(), Color(1, 0, 0), 6, 38, 18);
 
 	words.str("");
-	if (score >= 3)
+	if (win == true)
 	{
 		words << "Success! Press E to move on";
 	}
 	else
 	{
 		words << "Fail. Press E to retry";
-		if (Application::IsKeyPressed('E'))
-		{
-			gameStage = 1;
-			start = clock();
-			for (int i = 0; i < 5; i++)
-			{
-				infoAttained[i] = false;
-			}
-		}
 	}
 	RenderTextOnScreen(meshList[GEO_TEXT], words.str(), Color(1, 1, 1), 6, 3, 3);
 }
@@ -957,6 +1015,7 @@ void SceneInvestigation::Render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
 	if (light[0].type == Light::LIGHT_DIRECTIONAL)
 	{
 		Vector3 lightDir(light[0].position.x, light[0].position.y, light[0].position.z);
@@ -964,6 +1023,13 @@ void SceneInvestigation::Render()
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightDirection_cameraspace.x);
 	}
 	else if (light[0].type == Light::LIGHT_SPOT)
+	{
+		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
+		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
+		Vector3 spotDirection_cameraspace = viewStack.Top() * light[0].spotDirection;
+		glUniform3fv(m_parameters[U_LIGHT0_SPOTDIRECTION], 1, &spotDirection_cameraspace.x);
+	}
+	else if (light[0].type == Light::LIGHT_POINT)
 	{
 		Position lightPosition_cameraspace = viewStack.Top() * light[0].position;
 		glUniform3fv(m_parameters[U_LIGHT0_POSITION], 1, &lightPosition_cameraspace.x);
@@ -1007,7 +1073,8 @@ void SceneInvestigation::Render()
 	if (gameStage == 1)
 	{
 		RenderSkybox();
-		RenderInvestigationScene();
+		RenderCityObjects();
+		RenderMinigameUI();
 
 		//for testing
 
@@ -1025,19 +1092,12 @@ void SceneInvestigation::Render()
 	{
 		RenderResults();
 	}
-
-	if (Application::IsKeyPressed('I'))
-		light[0].position.z += 3;
-	if (Application::IsKeyPressed('J'))
-		light[0].position.x -= 3;
-	if (Application::IsKeyPressed('L'))
-		light[0].position.x += 3;
-	if (Application::IsKeyPressed('K'))
-		light[0].position.z -= 3;
-	if (Application::IsKeyPressed('O'))
-		light[0].position.y += 3;
-	if (Application::IsKeyPressed('P'))
-		light[0].position.y -= 3;
+	if (gameStage == 3)
+	{
+		RenderSkybox();
+		RenderCityObjects();
+		RenderGameEndUI();
+	}
 
 
 	std::ostringstream ss;

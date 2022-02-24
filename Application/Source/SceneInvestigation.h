@@ -54,18 +54,20 @@ class SceneInvestigation : public Scene
         U_MATERIAL_DIFFUSE,
         U_MATERIAL_SPECULAR,
         U_MATERIAL_SHININESS,
+        U_LIGHTENABLED,
+
         U_LIGHT0_POSITION,
         U_LIGHT0_COLOR,
         U_LIGHT0_POWER,
         U_LIGHT0_KC,
         U_LIGHT0_KL,
         U_LIGHT0_KQ,
-        U_LIGHTENABLED,
         U_LIGHT0_TYPE,
         U_LIGHT0_SPOTDIRECTION,
         U_LIGHT0_COSCUTOFF,
         U_LIGHT0_COSINNER,
         U_LIGHT0_EXPONENT,
+
         U_LIGHT1_POSITION,
         U_LIGHT1_COLOR,
         U_LIGHT1_POWER,
@@ -93,8 +95,9 @@ private:
 
     float FPS, touchRefresh;
     bool bLightEnabled, dialogueOn;
-    int npcNum, objectNum, timeLimit;
+    int npcNum, objectNum, timeLimit, score;
     bool infoAttained[5];
+    bool win;
     std::string info[5];
     Vector3 view;
     Vector3 right;
@@ -124,7 +127,11 @@ private:
 
     void RenderSkybox();
     void RenderIntro();
-    void RenderInvestigationScene();
+    void RenderCityObjects();
+    void RenderMinigameUI();
+    void RenderGameEndUI();
+    void MinigameInteractions();
+    void IntroAndResultInteractions();
     void RenderResults();
     void RenderMesh(Mesh* mesh, bool enableLight);
     void RenderText(Mesh* mesh, std::string text, Color color);
