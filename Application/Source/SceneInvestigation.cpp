@@ -779,7 +779,7 @@ void SceneInvestigation::RenderMinigameUI()
 		RenderTextOnScreen(meshList[GEO_TEXT], "Your house", Color(0, 1, 0), 5, 30, 55);//(-250, -1, -70)
 	}
 	//UI telling player they are in range
-	for (int i = 0; i < hitbox.size() - 1; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		if (dialogueOn == false)
 		{

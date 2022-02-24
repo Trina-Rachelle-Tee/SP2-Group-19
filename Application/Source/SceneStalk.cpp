@@ -17,7 +17,6 @@
 SceneStalk::SceneStalk()
 {
 }
-
 SceneStalk::~SceneStalk()
 {
 }
@@ -35,14 +34,15 @@ void SceneStalk::InitHitboxes()
 	hitbox.push_back(Hitbox(-26.f, -1.f, 195.f, 200.f, 20.f, 2.f));
 	hitbox.push_back(Hitbox(8.5f, -1.f, 195.f, 200.f, 20.f, 2.f));
 	hitbox.push_back(Hitbox(43.f, -1.f, 195.f, 200.f, 20.f, 2.f));
+	hitbox.push_back(Hitbox(63.f, -1.f, 265.f, 400.f, 20.f, 2.f));
 
 	//walls
 	hitbox.push_back(Hitbox(-63.f, -1.f, 8.f, 50.f, 20.f, 100.f));
 	hitbox.push_back(Hitbox(55.f, -1.f, 8.f, 50.f, 20.f, 100.f));
 	//first room ^^^
 	// SECOND ROOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOM
-	hitbox.push_back(Hitbox(123.f, -1.f, 90.f, 50.f, 20.f, 300.f));
-	hitbox.push_back(Hitbox(-113.f, -1.f, 90.f, 50.f, 20.f, 300.f));
+	hitbox.push_back(Hitbox(123.f, -1.f, 90.f, 50.f, 20.f, 400.f));
+	hitbox.push_back(Hitbox(-113.f, -1.f, 90.f, 50.f, 20.f, 400.f));
 
 	/*hitbox.push_back(Hitbox(16.f, -1.f, 48.f, 25.f, 20.f, 45.f));
 	hitbox.push_back(Hitbox(-40.f, -1.f, -25.5f, 75.f, 25.f, 45.f));
@@ -273,6 +273,12 @@ void SceneStalk::Init()
 
 	meshList[GEO_MOUSE] = MeshBuilder::GenerateOBJMTL("model1", "OBJ//computerMouse.obj", "OBJ//computerMouse.mtl");
 
+	meshList[GEO_DOC] = MeshBuilder::GenerateOBJMTL("model1", "OBJ//Documents.obj", "OBJ//Documents.mtl");
+
+	/*meshList[GEO_PHONE] = MeshBuilder::GenerateOBJMTL("model1", "OBJ//3d-model.obj", "OBJ//3d-model.mtl");*/
+
+	/*meshList[GEO_PHONE]->textureID = LoadTGA("Image//wood.tga");*/
+
 	/*meshList[GEO_GROUND] = MeshBuilder::GenerateOBJMTL("model1", "OBJ//floorHalf.obj", "OBJ//floorHalf.mtl");*/
 
 
@@ -298,6 +304,8 @@ void SceneStalk::Init()
 	RenderE6 = 0;
 	RenderE7 = 0;
 	RenderE9 = 0;
+	RenderE10 = 0;
+	Echeck10 = 10;
 
 	Echeck1 = 0;
 	Echeck2 = 0;
@@ -308,8 +316,12 @@ void SceneStalk::Init()
 	Echeck7 = 0;
 	Echeck8 = 0;
 	Echeck9 = 0;
+	dooropen = 0;
+	doorlock = 0;
 
-
+	Qpickup = 0;
+	pushdown = 0;
+	nextscene = false;
 
 	//for text spacing (check)
 	const char* file_path;
@@ -473,6 +485,8 @@ void SceneStalk::Update(double dt)
 	{
 		RenderE1 = 0;
 	}
+	
+
 	FPS = dt;
 	camera.Update(dt, hitbox);
 
@@ -600,7 +614,7 @@ void SceneStalk::Update(double dt)
 			if (Echeck1 == 0)
 			{
 
-				camera.Init(Vector3(-10.2, 9.5, -0.07), Vector3(0, 9.5, -0.07), Vector3(0, 1, 0));
+				camera.Init(Vector3(-30.2, 9.5, 201), Vector3(0, 9.5, -0.07), Vector3(0, 1, 0));
 
 			}
 
@@ -659,6 +673,54 @@ void SceneStalk::Update(double dt)
 	else
 	{
 		RenderE9 = 0;
+	}
+
+	if ((camera.position.z > 244 && camera.position.z < 255) && (camera.position.x > -58 && camera.position.x < -47.5))
+	{
+		RenderE10 = 1;
+		if (Application::IsKeyPressed('X'))
+		{
+			pushdown = -1000;
+			Qpickup = 1;
+		}
+	}
+	else
+	{
+		RenderE10 = 0;
+		/*Qpickup = 2;*/
+	}
+	/*if ((camera.position.x > 0.6 && camera.position.x < -9.2) && (camera.position.z > 259 && camera.position.z < 264))*/
+	
+	if (Qpickup == 1)
+	{
+		RenderE10 = 0;
+		if ((camera.position.x > -9.5 && camera.position.x < 4.37) && (camera.position.z > 259 && camera.position.z < 265))
+		{
+			dooropen = 1;
+			if (Application::IsKeyPressed('Q'))
+			{
+				
+				nextscene = true;
+			}
+			
+		
+		}
+		else
+		{
+			dooropen = 0;
+		}
+		
+	}
+	else if (Qpickup == 0)
+	{
+		if ((camera.position.x > -9.5 && camera.position.x < 4.37) && (camera.position.z > 259 && camera.position.z < 265))
+		{
+			doorlock = 1;
+		}
+		else
+		{
+			doorlock = 0;
+		}
 	}
 }
 
@@ -1010,6 +1072,15 @@ void SceneStalk::Render()
 	RenderMesh(meshList[GEO_BOOKS], true); //table
 	modelStack.PopMatrix();
 
+	//modelStack.PushMatrix();
+	//modelStack.Translate(0, 5, 0);
+	///*modelStack.Rotate(180, 1, 0, 0);
+	//modelStack.Rotate(180, 0, 0, 1);*/
+	///*modelStack.Rotate(90, 0, 1, 0);*/
+	//modelStack.Scale(3, 3, 3);
+	//RenderMesh(meshList[GEO_PHONE], true); //table
+	//modelStack.PopMatrix();
+
 	/*modelStack.PushMatrix();
 	modelStack.Translate(0, -1, 6);
 	modelStack.Rotate(-90, 1, 0, 0);
@@ -1234,6 +1305,68 @@ void SceneStalk::Render()
 	RenderMesh(meshList[GEO_WALLS], true);
 	modelStack.PopMatrix();
 
+	//the fourth room //////////////////////////////////////////////////////////////
+
+	modelStack.PushMatrix();
+	modelStack.Translate(100, 32, 200);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Scale(80, 32, 45);      //wall first of 2nd room
+	RenderMesh(meshList[GEO_WALLS], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-95, 32, 270);
+	modelStack.Rotate(90, 0, -1, 0);
+	modelStack.Rotate(180, -1, 0, 0);
+	modelStack.Scale(80, 32, 55);      //wall first of 2nd room
+	RenderMesh(meshList[GEO_WALLS], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-95, -10.5, 270);
+	modelStack.Rotate(180, 0, 1, 0);
+	modelStack.Scale(200, 32, 55);      //wall first of 2nd room
+	RenderMesh(meshList[GEO_WALLS], true);
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(0.5, -1, 266.5);
+	modelStack.Scale(20, 20, 20);
+	RenderMesh(meshList[GEO_DOOR1], true); //right door
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(50, -1, 250);
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Rotate(180, 0, 0, 1);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 20, 30);
+	RenderMesh(meshList[GEO_TABLE], true); //table
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-35, -1, 250);
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Rotate(180, 0, 0, 1);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(20, 20, 30);
+	RenderMesh(meshList[GEO_TABLE], true); //table
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(-44, 6, 250);
+	modelStack.Translate(0, 0, pushdown);
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Rotate(180, 0, 0, 1);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderMesh(meshList[GEO_DOC], true); //table
+	modelStack.PopMatrix();
+
+	/// <summary>
+	/// ///////////////////////////////////////////
+	/// </summary>
 	modelStack.PushMatrix();
 	modelStack.Translate(-5, 30, -25);
 	modelStack.Scale(7, 7, 7);
@@ -1339,6 +1472,24 @@ void SceneStalk::Render()
 	RenderText(meshList[GEO_TEXT], "^@&()@*PICK THE FINAL DOOR", Color(1, 0, 0));
 	modelStack.PopMatrix();
 
+	modelStack.PushMatrix();
+	modelStack.Translate(93, 15, 227);             //(dist from left wall, height from ground, where on wall)
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Rotate(180, 0, 0, 1);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderText(meshList[GEO_TEXT], "Good job, you've made it past the doors.", Color(1, 0, 0));
+	modelStack.PopMatrix();
+
+	modelStack.PushMatrix();
+	modelStack.Translate(93, 13, 227);             //(dist from left wall, height from ground, where on wall)
+	modelStack.Rotate(180, 1, 0, 0);
+	modelStack.Rotate(180, 0, 0, 1);
+	modelStack.Rotate(90, 0, 1, 0);
+	modelStack.Scale(2, 2, 2);
+	RenderText(meshList[GEO_TEXT], "Find the Documents and you may leave.", Color(1, 0, 0));
+	modelStack.PopMatrix();
+
 	if (RenderE1 == 1)
 	{
 		modelStack.PushMatrix();
@@ -1402,6 +1553,27 @@ void SceneStalk::Render()
 		modelStack.PopMatrix();
 	}
 
+	if (RenderE10 == 1)
+	{
+		modelStack.PushMatrix();
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press X to Pick up Documents", Color(1, 1, 1), 5, 12, 10);
+		modelStack.PopMatrix();
+	}
+
+	if (doorlock == 1)
+	{
+		modelStack.PushMatrix();
+		RenderTextOnScreen(meshList[GEO_TEXT], "Find the documents before leaving the room.", Color(1, 1, 1), 5, 12, 10);
+		modelStack.PopMatrix();
+	}
+
+	if (dooropen == 1)
+	{
+		modelStack.PushMatrix();
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press Q to open", Color(1, 1, 1), 5, 12, 10);
+		modelStack.PopMatrix();
+	}
+
 	RenderMeshOnScreen(meshList[GEO_QUAD], 40, 30, 20, 10);
 
 	std::ostringstream ss;
@@ -1448,11 +1620,10 @@ void SceneStalk::Exit()
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }
-
 void SceneStalk::CurrentScene()
 {
-}
 
+}
 int SceneStalk::NextScene()
 {
 	return 0;

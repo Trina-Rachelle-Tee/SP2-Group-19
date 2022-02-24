@@ -66,6 +66,7 @@ class SceneStalk : public Scene
         GEO_LAPTOP,
         GEO_BOOKS,
         GEO_MOUSE,
+        GEO_DOC,
         NUM_GEOMETRY,
     };
     enum UNIFORM_TYPE
@@ -141,7 +142,6 @@ private:
     bool pickup;
     bool pickup1;
     bool switcher;
-    bool nextScene;
     float cx, cy, cz;
     int RenderE1;
     int RenderE2;
@@ -152,6 +152,7 @@ private:
     int RenderE7;
     int RenderE8;
     int RenderE9;
+    int RenderE10;
     int Echeck1;
     int Echeck2;
     int Echeck3;
@@ -161,6 +162,14 @@ private:
     int Echeck7;
     int Echeck8;
     int Echeck9;
+    int Echeck10;
+    int Qpickup;
+    int pushdown;
+    int doorlock;
+    int dooropen;
+
+    bool nextscene;
+    
 
     Vector3 view;
     Vector3 right;
