@@ -621,20 +621,6 @@ void SceneMinigame2::Render()
 		RenderResults();
 	}
 
-	//RenderMesh(meshList[GEO_AXES], false);
-
-	std::ostringstream Xcoords;
-	Xcoords.str("");
-	Xcoords.precision(3);
-	Xcoords << "X : " << camera.position.x;
-	RenderTextOnScreen(meshList[GEO_TEXT], Xcoords.str(), Color(0, 0, 1), 2, 0, 54);
-
-	std::ostringstream Zcoords;
-	Zcoords.str("");
-	Zcoords.precision(3);
-	Zcoords << "Z : " << camera.position.z;
-	RenderTextOnScreen(meshList[GEO_TEXT], Zcoords.str(), Color(0, 0, 1), 2, 0, 52);
-
 
 	RenderMeshOnScreen(meshList[GEO_QUAD], 40, 30, 20, 10);
 
@@ -650,12 +636,10 @@ void SceneMinigame2::Render()
 void SceneMinigame2::Exit()
 {
 	// Cleanup VBO here
-	delete meshList[GEO_QUAD];
-	delete meshList[GEO_FRONT];
-	delete meshList[GEO_HEART];
-	delete meshList[GEO_TEXT];
-	delete meshList[GEO_BASKET];
-	delete meshList[GEO_INTRO];
+	for (int i = 0; i < NUM_GEOMETRY; ++i)
+	{
+		delete meshList[i];
+	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
 }
