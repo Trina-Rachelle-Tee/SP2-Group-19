@@ -72,10 +72,10 @@
     <ClCompile Include="Source\SceneMinigame1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneStalk.cpp">
+    <ClCompile Include="Source\SceneGameEnd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\SceneGameEnd.cpp">
+    <ClCompile Include="Source\SceneStalk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,13 +146,13 @@
     <ClInclude Include="Source\SceneMinigame1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SceneStalk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\SceneGameEnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SceneStalk.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
