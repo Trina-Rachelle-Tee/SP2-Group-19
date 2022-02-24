@@ -193,7 +193,8 @@ private:
     bool atDoor;
     bool canLeave;
     bool nextScene;
-    bool startMini;
+    bool startMini1;
+    bool startMini2;
     
     std::vector<std::string> BossDialogue;
 
@@ -211,7 +212,8 @@ private:
     std::vector<Hitbox> hitbox;
     void InitHitbox();
     void pcInteract();
-    void startMini2();
+    void StartMini1();
+    void StartMini2();
     void RenderSkybox();
     void RenderMesh(Mesh* mesh, bool enableLight);
     void RenderText(Mesh* mesh, std::string text, Color color);

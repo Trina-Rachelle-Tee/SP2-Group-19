@@ -1626,5 +1626,9 @@ void SceneStalk::CurrentScene()
 }
 int SceneStalk::NextScene()
 {
+	if (nextscene == true)
+	{
+		return 7;
+	}
 	return 0;
 }

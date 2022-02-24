@@ -94,7 +94,8 @@ void SceneHouse::Init()
 	canPickup = false;
 	atDoor = false;
 	canLeave = false;
-	startMini = false;
+	startMini1 = false;
+	startMini2 = false;
 	stage = 0;
 	index = 0;
 	
@@ -465,17 +466,19 @@ void SceneHouse::getBossDialogue()
 			{
 				playDialogue = false;
 				canLeave = true;
+				index += 1;
 			}
 			else
 				index += 1;
 			isPressed = !isPressed;
 		}
-		else if (stage == 1)
+		else if (stage == 2)
 		{
 			if (index == 16)
 			{
 				playDialogue = false;
-				startMini = true;
+				startMini2 = true;
+				index += 1;
 			}
 			else
 				index += 1;
@@ -504,10 +507,23 @@ void SceneHouse::pcInteract()
 
 	getBossDialogue();
 }
-void SceneHouse::startMini2()
+void SceneHouse::StartMini1()
+{
+	if (camera.PlayerInRange(hitbox, 10) == true && startMini1 == true)
+	{
+		canInteractPC = true;
+		if (Application::IsKeyPressed('E'))
+		{
+			nextScene == true;
+		}
+	}
+	else
+		canInteractPC = false;
+}
+void SceneHouse::StartMini2()
 {
 
-	if (camera.PlayerInRange(hitbox, 10) == true && startMini == true)
+	if (camera.PlayerInRange(hitbox, 10) == true && startMini2 == true)
 	{
 		canInteractPC = true;
 		if (Application::IsKeyPressed('E'))
@@ -599,7 +615,8 @@ void SceneHouse::Update(double dt)
 	}
 
 	pcInteract();
-	startMini2();
+	StartMini2();
+	StartMini1();
 	static int frame = 1;
 	static float timer = 0;
 
@@ -636,6 +653,14 @@ void SceneHouse::Update(double dt)
 			isPressed = false;
 		}
 	}
+	if (stage == 1)
+	{
+		startMini1 = true;
+		startMini2 = false;
+		incomingCall = false;
+	}
+	else
+		startMini1 = false;
 }
 void SceneHouse::RenderSkybox() {
 	const float OFFSET = 499;
@@ -1588,9 +1613,13 @@ void SceneHouse::Render()
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Press [E] to recieve call", Color(0, 1, 0), 5, 25, 5);
 	}
-	if (canInteractPC == true && startMini == true)
+	if (canInteractPC == true && startMini1 == true)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "Press [E] to start minigame", Color(0, 1, 0), 5, 25, 5);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press [E] to surf web", Color(0, 1, 0), 5, 25, 5);
+	}
+	if (canInteractPC == true && startMini2 == true)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Press [E] to generate hype", Color(0, 1, 0), 5, 25, 5);
 	}
 	if (playDialogue == true)
 	{
@@ -1601,9 +1630,13 @@ void SceneHouse::Render()
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "New objective: Leave and investigate", Color(1, 0, 0), 5, 15, 55);
 	}
-	if (startMini == true && stage == 1)
+	if (startMini1 == true && stage == 1)
 	{
-		RenderTextOnScreen(meshList[GEO_TEXT], "Use PC to boost hype", Color(1, 0, 0), 5, 15, 55);
+		RenderTextOnScreen(meshList[GEO_TEXT], "Current Objective: Use PC to search", Color(1, 0, 0), 5, 15, 55);
+	}
+	if (startMini2 == true && stage == 2)
+	{
+		RenderTextOnScreen(meshList[GEO_TEXT], "Current Objective: Use PC to boost hype", Color(1, 0, 0), 5, 15, 55);
 	}
 	if (canLeave == true && atDoor == true)
 	{
@@ -1632,7 +1665,13 @@ int SceneHouse::NextScene()
 		stage++;
 		return 3;
 	}
-	if (nextScene == true && stage == 1)
+	else if (nextScene == true && stage == 1)
+	{
+		nextScene = false;
+		stage++;
+		return 4;
+	}
+	else if (nextScene == true && stage == 2)
 	{
 		nextScene = false;
 		stage++;

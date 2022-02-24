@@ -98,6 +98,7 @@ private:
     int npcNum, objectNum, timeLimit, score;
     bool infoAttained[5];
     bool win;
+    bool nextScene;
     std::string info[5];
     Vector3 view;
     Vector3 right;

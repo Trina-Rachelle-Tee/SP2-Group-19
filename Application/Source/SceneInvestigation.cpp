@@ -788,7 +788,11 @@ void SceneInvestigation::RenderGameEndUI()
 	if (camera.PlayerInRange(hitbox, 12) == true)
 	{
 		RenderTextOnScreen(meshList[GEO_TEXT], "Your house", Color(0, 1, 0), 5, 32, 55);
-		RenderTextOnScreen(meshList[GEO_TEXT], "E to enter", Color(0, 1, 0), 5, 32, 50);
+		RenderTextOnScreen(meshList[GEO_TEXT], "[Return] to enter", Color(0, 1, 0), 5, 32, 50);
+		if (Application::IsKeyPressed(VK_RETURN))
+		{
+			nextScene = true;
+		}
 	}
 }
 void SceneInvestigation::MinigameInteractions()
@@ -1118,10 +1122,9 @@ void SceneInvestigation::Exit()
 	// Cleanup VBO here
 	for (int i = 0; i < NUM_GEOMETRY; ++i)
 	{
-		if (meshList[i])
-		{
-			delete meshList[i];
-		}
+		
+		delete meshList[i];
+		
 	}
 	glDeleteVertexArrays(1, &m_vertexArrayID);
 	glDeleteProgram(m_programID);
@@ -1133,5 +1136,9 @@ void SceneInvestigation::CurrentScene()
 
 int SceneInvestigation::NextScene()
 {
+	if (nextScene == true)
+	{
+		return 2;
+	}
 	return 0;
 }

@@ -145,7 +145,7 @@ void Application::Run()
 	Scene* scene6 = new SceneStalk();
 	Scene* scene7 = new SceneHouseGame();
 	Scene* scene8 = new SceneGameEnd();
-	Scene* scene = scene6;
+	Scene* scene = scene1;
 
 	scene1->Init();
 	scene2->Init();
@@ -159,7 +159,7 @@ void Application::Run()
 	m_timer.startTimer();    // Start timer to calculate how long it takes to render this frame
 	while (!glfwWindowShouldClose(m_window) && !IsKeyPressed(VK_ESCAPE))
 	{
-		if (IsKeyPressed(VK_F1))
+		/*if (IsKeyPressed(VK_F1))
 			scene = scene1;
 		if (IsKeyPressed(VK_F2))
 			scene = scene2;
@@ -174,28 +174,28 @@ void Application::Run()
 		if (IsKeyPressed(VK_F7))
 			scene = scene7;
 		if (IsKeyPressed(VK_F8))
+			scene = scene8;*/
+
+		int sceneNo = scene->NextScene();
+		if (sceneNo == 1)
+			scene = scene1;
+		if (sceneNo == 2)
+			scene = scene2;
+		if (sceneNo == 3)
+			scene = scene3;
+		if (sceneNo == 4)
+			scene = scene4;
+		if (sceneNo == 5)
+			scene = scene5;
+		if (sceneNo == 6)
+			scene = scene6;
+		if (sceneNo == 7)
+			scene = scene7;
+		if (sceneNo == 8)
 			scene = scene8;
 
-		//int sceneNo = scene->NextScene();
-		//if (sceneNo == 1)
-		//	scene = scene1;
-		//if (sceneNo == 2)
-		//	scene = scene2;
-		//if (sceneNo == 3)
-		//	scene = scene3;
-		//if (sceneNo == 4)
-		//	scene = scene4;
-		//if (sceneNo == 5)
-		//	scene = scene5;
-		//if (sceneNo == 6)
-		//	scene = scene6;
-		//if (sceneNo == 7)
-		//	scene = scene7;
-		//if (sceneNo == 8)
-		//	scene = scene8;
 
-
-		if (scene == scene8 || scene == scene4) 
+		if (scene == scene8) 
 		{
 			glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		}
